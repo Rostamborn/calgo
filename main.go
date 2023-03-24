@@ -3,28 +3,24 @@ package main
 import (
 	"fmt"
 	"log"
-	"os"
 
 	"github.com/calgo/parser"
   "github.com/calgo/gui"
 )
 
 func main() {
-  f, err := os.Open("/home/arman/Coding/golang/calgo/UK_Holidays.ics")
+  items, err := parser.ReadICS("UK_Holidays.ics")
   if err != nil {
-    log.Fatal("couldn't open file")
+    log.Fatal("couldnt Read ics")
   }
-  defer f.Close()
-
-  var p parser.Parser
-  pr := p.NewParser(f)
-
-  pr.Parse()
-
-  items := pr.Events  
 
   for _, v := range items {
     fmt.Println(v)
+  }
+  err, ok := parser.WriteToICS(items, "test.ics")
+  if err != nil {
+    fmt.Println(err.Error())
+    fmt.Println(ok)
   }
   gui.Init()
 }
