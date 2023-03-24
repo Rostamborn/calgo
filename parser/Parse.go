@@ -104,31 +104,18 @@ func (p *Parser) ParseEvent() (*Event, error){
 }
 
 func (p *Parser) Parse() error{
-  // a trick to make sure we hit END:VCALENDAR statement
-  hitEndVcalendar := false
-  // isEOF: a varibale to indicate End Of File
+    // isEOF: a varibale to indicate End Of File
   l, err, isEOF := p.ParseLine()
-  if l.Key != "BEGIN" && l.Value != "VCALENDAR" {
-    return errors.New("lacking BEGIN:VCALENDAR statement")
-  } else {
-    for !isEOF {
-      if l.Key == "BEGIN" && l.Value == "VEVENT"{
-        event, err := p.ParseEvent()
-        if err != nil {
-          log.Fatal("error while parsing lines")
-        } else {
-          p.Events = append(p.Events, *event)
-        }
-      }
-      l, err, isEOF = p.ParseLine()
-      if l.Key == "END" && l.Value == "VCALENDAR" {
-        hitEndVcalendar = true
-        break
+  for !isEOF {
+    if l.Key == "BEGIN" && l.Value == "VEVENT"{
+      event, err := p.ParseEvent()
+      if err != nil {
+        log.Fatal("error while parsing lines")
+      } else {
+        p.Events = append(p.Events, *event)
       }
     }
-    if !hitEndVcalendar {
-      return errors.New("Didn't reach END:VCALENDAR")
-    }
-    return err
+    l, err, isEOF = p.ParseLine()
   }
+  return err
 }

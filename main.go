@@ -17,10 +17,10 @@ func main() {
   for _, v := range items {
     fmt.Println(v)
   }
-  err, ok := parser.WriteToICS(items, "test.ics")
-  if err != nil {
-    fmt.Println(err.Error())
-    fmt.Println(ok)
-  }
+  // err, ok := parser.WriteToICS(items, "test.ics")
+  // if err != nil {
+  //   fmt.Println(err.Error())
+  //   fmt.Println(ok)
+  // }
   gui.Init()
 }
