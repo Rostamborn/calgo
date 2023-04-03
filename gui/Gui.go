@@ -1,17 +1,20 @@
 package gui
 
 import (
+	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/app"
-	"fyne.io/fyne/v2/widget"
+	"github.com/calgo/parser"
 )
 
-func Init() {
-  app := app.New()
-  mainWindow := app.NewWindow("CALGO")
-  mainWindow.SetMaster()
-  mainWindow.Show()
-  
-  mainWindow.SetContent(widget.NewLabel("boom baam booommm"))
+func Init(events []parser.Event) {
+	app := app.New()
+	mainWindow := app.NewWindow("CALGO")
+	mainWindow.Resize(fyne.NewSize(700, 700))
+	mainWindow.SetMaster()
 
-  app.Run()
+	month := InitMonth(events)
+	mainWindow.SetContent(month)
+
+	mainWindow.Show()
+	app.Run()
 }

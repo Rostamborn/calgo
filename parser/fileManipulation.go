@@ -5,16 +5,16 @@ import (
 	"os"
 )
 
-func ReadICS(path string) ([]Event, error){
-  f, err := os.Open("/home/arman/Coding/golang/calgo/UK_Holidays.ics")
-  if err != nil {
-    return nil, errors.New("couldn't open file")
-  }
-  defer f.Close()
+func ReadICS(path string) ([]Event, error) {
+	f, err := os.Open(path)
+	if err != nil {
+		return nil, errors.New("couldn't open file")
+	}
+	defer f.Close()
 
-  var p Parser
-  pr := p.NewParser(f)
-  pr.Parse()
+	var p Parser
+	pr := p.NewParser(f)
+	e := pr.Parse()
 
-  return pr.Events, nil
+	return pr.Events, e
 }
