@@ -12,7 +12,7 @@ func Init(events []parser.Event) {
 	mainWindow.Resize(fyne.NewSize(700, 700))
 	mainWindow.SetMaster()
 
-	month := InitMonth(events)
+	month := InitDays(events)
 	mainWindow.SetContent(month)
 
 	mainWindow.Show()
