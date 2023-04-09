@@ -9,10 +9,10 @@ import (
 func Init(events []parser.Event) {
 	app := app.New()
 	mainWindow := app.NewWindow("CALGO")
-	mainWindow.Resize(fyne.NewSize(700, 700))
+	mainWindow.Resize(fyne.NewSize(700, 850))
 	mainWindow.SetMaster()
 
-	month := InitDays(events)
+	month := InitDays(events, mainWindow)
 	mainWindow.SetContent(month)
 
 	mainWindow.Show()
