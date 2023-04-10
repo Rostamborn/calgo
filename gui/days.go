@@ -2,10 +2,8 @@ package gui
 
 import (
 	"fmt"
-	"image/color"
 
 	"fyne.io/fyne/v2"
-	"fyne.io/fyne/v2/canvas"
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/dialog"
 	"fyne.io/fyne/v2/layout"
@@ -64,77 +62,56 @@ func (day *Day) removeEvent(label *tappableLabel) {
 }
 
 // a function to initialize all the days in a year
-func InitDays(events []parser.Event, mainWindow fyne.Window) *fyne.Container {
+func InitDays(events []parser.Event, mainWindow fyne.Window) []*Day {
 	// these starting variables can be stored and read from a file
 	// it does'nt matter which kind of calendar it is
+	daysInYear := 365
 	startingWeekday := "sun"
 	startingYear := 2023
-	calendarType := "Gregorian" // Solar, Gregorian
+	calendarType := "Solar" // Solar, Gregorian
+	days := make([]*Day, daysInYear)
 
-	weekdays := []string{"sat", "sun", "mon", "tue", "wed", "thu", "fri"}
-	var days [31]*Day // for testing we stick to small numbers for now
-
-	mainContainer := container.New(layout.NewGridLayout(7))
-	for _, v := range weekdays {
-		text := canvas.NewText(v, color.White)
-		text.TextSize = 26
-		mainContainer.Add(text)
-	}
-
-	for i, v := range weekdays {
-		if v == startingWeekday {
-			for j := i; j > 0; j-- {
-				mainContainer.Add(container.New(layout.NewVBoxLayout()))
-			}
-		}
-	}
-
-	for i := 0; i < 31; i++ {
+	for i := 0; i < daysInYear; i++ {
 		days[i] = &Day{
 			date:       calculateDate(calendarType, i+1, startingYear, startingWeekday),
 			con:        container.New(layout.NewVBoxLayout()),
 			mainWindow: mainWindow,
 		}
-		// newText := &tappableLabel{day: days[i]}
-		// newText.SetText(days[i].date.day)
 		newText := &titleLabel{day: days[i]}
 		newText.SetText(days[i].date.day)
 		days[i].con.Add(newText)
-		mainContainer.Add(days[i].con)
 	}
 	for _, event := range events {
 		for _, day := range days {
 			day.addEvent(event)
 		}
 	}
-	return mainContainer
+	return days
 }
 
 // give the function a day in a year and it
 // returns a Date object with correctly filled fields
 func calculateDate(calendarType string, dayNumber int, year int, startingWeekday string) Date {
-	daysInMonthGregorian := []int{31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31}
-	daysInMonthSolar := []int{31, 31, 31, 31, 31, 31, 31, 30, 30, 30, 30, 29}
 	var daysInMonth []int
 	if calendarType == "Gregorian" {
-		daysInMonth = daysInMonthGregorian
+		daysInMonth = GREGORIAN
 	} else if calendarType == "Solar" {
-		daysInMonth = daysInMonthSolar
+		daysInMonth = SOLAR
 	}
 
-	weekdays := []string{"sat", "sun", "mon", "tue", "wed", "thu", "fri"}
-
-	/////////////////////
+	// we modulu daynumber congruent to 7 and then based
+	// on the starting weekday, we add the remainder to know
+	// which weekday it is
 	tmp := (dayNumber - 1) % 7
 	var index int
-	for i, v := range weekdays {
+	for i, v := range WEEKDAYS {
 		if v == startingWeekday {
 			index = i
 			break
 		}
 	}
 	finalIndex := (index + tmp) % 7
-	finalResultForWeekday := weekdays[finalIndex]
+	finalResultForWeekday := WEEKDAYS[finalIndex]
 
 	num := dayNumber
 	var date Date

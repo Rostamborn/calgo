@@ -20,10 +20,11 @@ func Init(events []parser.Event) {
 	// 	topBar.Add(widget.NewLabel(v))
 	// }
 
-	month := InitDays(events, mainWindow)
+	days := InitDays(events, mainWindow)
+	months := InitMonths(days)
 
 	// mainContainer := container.NewBorder(topBar, month, nil, nil)
-	mainWindow.SetContent(month)
+	mainWindow.SetContent(months[0].con)
 
 	mainWindow.Show()
 	app.Run()
