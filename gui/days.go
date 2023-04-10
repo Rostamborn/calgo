@@ -15,15 +15,12 @@ type Date struct {
 }
 
 type Day struct {
-	date Date
-	con  *fyne.Container
-	// weekday    string // sat sun mon tue wed thu fri
+	date       Date
+	con        *fyne.Container
 	events     []parser.Event
 	mainWindow fyne.Window
 }
 
-// an Event object can be created here and be added to
-// the global list of Events and written into ics file
 // TODO: make it so that events newly added, are also
 // written in the .ics file
 func (day *Day) addEvent(event parser.Event) {
@@ -68,7 +65,7 @@ func InitDays(events []parser.Event, mainWindow fyne.Window) []*Day {
 	daysInYear := 365
 	startingWeekday := "sun"
 	startingYear := 2023
-	calendarType := "Solar" // Solar, Gregorian
+	calendarType := "Gregorian" // Solar, Gregorian
 	days := make([]*Day, daysInYear)
 
 	for i := 0; i < daysInYear; i++ {
@@ -81,9 +78,13 @@ func InitDays(events []parser.Event, mainWindow fyne.Window) []*Day {
 		newText.SetText(days[i].date.day)
 		days[i].con.Add(newText)
 	}
+	var eventDate Date
 	for _, event := range events {
+		eventDate = getDate(event)
 		for _, day := range days {
-			day.addEvent(event)
+			if (eventDate.day == day.date.day) && (eventDate.month == day.date.month) {
+				day.addEvent(event)
+			}
 		}
 	}
 	return days

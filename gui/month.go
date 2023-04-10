@@ -18,8 +18,9 @@ type Month struct {
 }
 
 func InitMonths(days []*Day) []*Month {
-	calendarType := "Solar" // Solar, Gregorian
-	startingWeekday := days[0].date.weekday
+	calendarType := "Gregorian" // Solar, Gregorian
+	// startingWeekday := days[0].date.weekday
+	var startingWeekday string
 	startingYear, _ := strconv.Atoi(days[0].date.year)
 
 	var daysInMonth []int
@@ -32,6 +33,9 @@ func InitMonths(days []*Day) []*Month {
 	months := make([]*Month, 12)
 	prevMonthdays := 0
 	for i, v := range daysInMonth {
+		// to calculate how many empty should be added
+		// to arrange dates with weekdays correctly
+		startingWeekday = days[prevMonthdays].date.weekday
 		months[i] = &Month{
 			number: i + 1,
 			year:   startingYear,
