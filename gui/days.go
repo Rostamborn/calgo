@@ -2,8 +2,10 @@ package gui
 
 import (
 	"fmt"
+	"image/color"
 
 	"fyne.io/fyne/v2"
+	"fyne.io/fyne/v2/canvas"
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/dialog"
 	"fyne.io/fyne/v2/layout"
@@ -11,13 +13,13 @@ import (
 )
 
 type Date struct {
-	day, month, year string
+	day, month, year, weekday string
 }
 
 type Day struct {
-	date       Date
-	con        *fyne.Container
-	weekday    string // sat sun mon tue wed thu fri
+	date Date
+	con  *fyne.Container
+	// weekday    string // sat sun mon tue wed thu fri
 	events     []parser.Event
 	mainWindow fyne.Window
 }
@@ -63,21 +65,34 @@ func (day *Day) removeEvent(label *tappableLabel) {
 
 // a function to initialize all the days in a year
 func InitDays(events []parser.Event, mainWindow fyne.Window) *fyne.Container {
-	weekdays := []string{"sun", "mon", "tue", "wed", "thu", "fri", "sat"}
+	// these starting variables can be stored and read from a file
+	// it does'nt matter which kind of calendar it is
+	startingWeekday := "sun"
+	startingYear := 2023
+	calendarType := "Gregorian" // Solar, Gregorian
+
+	weekdays := []string{"sat", "sun", "mon", "tue", "wed", "thu", "fri"}
 	var days [31]*Day // for testing we stick to small numbers for now
 
-	// there must be a grid container like this for each month which will
-	// contain containers for each day. the container for each day is of type
-	// verticalContainer or VBox
-	// TODO: make it so that each month has a grid container and includes
-	// relavent days
 	mainContainer := container.New(layout.NewGridLayout(7))
+	for _, v := range weekdays {
+		text := canvas.NewText(v, color.White)
+		text.TextSize = 26
+		mainContainer.Add(text)
+	}
+
+	for i, v := range weekdays {
+		if v == startingWeekday {
+			for j := i; j > 0; j-- {
+				mainContainer.Add(container.New(layout.NewVBoxLayout()))
+			}
+		}
+	}
 
 	for i := 0; i < 31; i++ {
 		days[i] = &Day{
-			date:       calculateDate(i + 1),
+			date:       calculateDate(calendarType, i+1, startingYear, startingWeekday),
 			con:        container.New(layout.NewVBoxLayout()),
-			weekday:    weekdays[i%7],
 			mainWindow: mainWindow,
 		}
 		// newText := &tappableLabel{day: days[i]}
@@ -97,8 +112,30 @@ func InitDays(events []parser.Event, mainWindow fyne.Window) *fyne.Container {
 
 // give the function a day in a year and it
 // returns a Date object with correctly filled fields
-func calculateDate(dayNumber int) Date {
-	daysInMonth := []int{31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31}
+func calculateDate(calendarType string, dayNumber int, year int, startingWeekday string) Date {
+	daysInMonthGregorian := []int{31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31}
+	daysInMonthSolar := []int{31, 31, 31, 31, 31, 31, 31, 30, 30, 30, 30, 29}
+	var daysInMonth []int
+	if calendarType == "Gregorian" {
+		daysInMonth = daysInMonthGregorian
+	} else if calendarType == "Solar" {
+		daysInMonth = daysInMonthSolar
+	}
+
+	weekdays := []string{"sat", "sun", "mon", "tue", "wed", "thu", "fri"}
+
+	/////////////////////
+	tmp := (dayNumber - 1) % 7
+	var index int
+	for i, v := range weekdays {
+		if v == startingWeekday {
+			index = i
+			break
+		}
+	}
+	finalIndex := (index + tmp) % 7
+	finalResultForWeekday := weekdays[finalIndex]
+
 	num := dayNumber
 	var date Date
 	for month, dayInMonth := range daysInMonth {
@@ -107,7 +144,8 @@ func calculateDate(dayNumber int) Date {
 			num += dayInMonth
 			date.day = formatDayDate(num)
 			date.month = formatMonthDate(month)
-			date.year = "2023"
+			date.year = fmt.Sprint(year)
+			date.weekday = finalResultForWeekday
 			break
 		}
 	}
