@@ -22,5 +22,5 @@ func main() {
 	//   fmt.Println(err.Error())
 	//   fmt.Println(ok)
 	// }
-	gui.Init(events)
+	gui.Initialize(events)
 }

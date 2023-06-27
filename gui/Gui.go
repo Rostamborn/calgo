@@ -1,43 +1,37 @@
 package gui
 
 import (
-	"fmt"
+	"log"
 
-	"fyne.io/fyne/v2"
-	"fyne.io/fyne/v2/app"
-	"fyne.io/fyne/v2/container"
-
-	// "fyne.io/fyne/v2/widget"
 	"github.com/calgo/parser"
+	"github.com/hajimehoshi/ebiten/v2"
 )
 
-func Init(events []parser.Event) {
-	app := app.New()
-	mainWindow := app.NewWindow("CALGO")
-	mainWindow.Resize(fyne.NewSize(700, 850))
-	mainWindow.SetMaster()
+type Game struct {
 
-	// weekdays := []string{"sat", "sun", "mon", "tue", "wed", "thu", "fri"}
-	// topBar := container.NewHBox()
-	// for _, v := range weekdays {
-	// 	topBar.Add(widget.NewLabel(v))
-	// }
+}
 
-	days := InitDays(events, mainWindow)
-	months := InitMonths(days)
+func (g *Game) Update() error {
+    return nil
+}
 
-	// var tabs *container.AppTabs
-	tabs := container.NewAppTabs()
-	for i := 0; i < 12; i++ {
-		tabs.Append(container.NewTabItem(fmt.Sprint(i+1), months[i].con))
-	}
-	// tabs.Append(container.NewTabItem("january", months[0].con))
-	// tabs.Append(container.NewTabItem("february", months[1].con))
+func (g *Game) Draw(screen *ebiten.Image) {
 
-	// mainContainer := container.NewBorder(topBar, month, nil, nil)
-	// mainWindow.SetContent(months[0].con)
-	mainWindow.SetContent(tabs)
+}
 
-	mainWindow.Show()
-	app.Run()
+func (g *Game) Layout(outsideWidth, outsideHeight int) (screenWidth, screenHeight int) {
+    return 0, 0
+}
+
+func Initialize(events []parser.Event) {
+    game := &Game{
+    }
+
+    ebiten.SetWindowSize(800, 800)
+    ebiten.SetWindowTitle("Calgo")
+
+    if err := ebiten.RunGame(game); err != nil {
+        log.Fatal(err)
+    }
+	
 }

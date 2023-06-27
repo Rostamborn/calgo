@@ -1,4 +1,4 @@
-package gui
+package main
 
 const (
 	TextSizeForWeekday = 26
