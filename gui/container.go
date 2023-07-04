@@ -73,7 +73,7 @@ func (b *BoxContainer) Update() {
         //     }
         // }
         if b.DialogBox != nil {
-            ok := b.DialogBox.Update()
+            ok := b.DialogBox.ClickToExit()
             fmt.Println("dialog")
             if ok {
                 b.Mode = "default"

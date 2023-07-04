@@ -74,7 +74,7 @@ func (d *DialogBox) Draw(screen *ebiten.Image) {
     }
 }
 
-func (d *DialogBox) Update() bool {
+func (d *DialogBox) ClickToExit() bool {
     if inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonLeft) {
         mouseX, mouseY := ebiten.CursorPosition()
         if mouseX <= d.X || mouseX >= d.X + d.Dimension || mouseY <= d.Y || mouseY >= d.Y + d.Dimension {
