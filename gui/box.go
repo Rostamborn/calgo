@@ -1,7 +1,7 @@
 package gui
 
 import (
-	"github.com/hajimehoshi/ebiten/inpututil"
+	"github.com/hajimehoshi/ebiten/v2/inpututil"
 	"github.com/hajimehoshi/ebiten/v2"
 )
 
@@ -74,11 +74,17 @@ func (d *DialogBox) Draw(screen *ebiten.Image) {
     }
 }
 
-func (d *DialogBox) Update() {
+func (d *DialogBox) Update() bool {
     if inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonLeft) {
         mouseX, mouseY := ebiten.CursorPosition()
-        if mouseX <= d.X && mouseX >= d.X + d.Dimension && mouseY <= d.Y && mouseY >= d.Y + d.Dimension {
+        if mouseX <= d.X || mouseX >= d.X + d.Dimension || mouseY <= d.Y || mouseY >= d.Y + d.Dimension {
             d.Visible = false
+            return true
         }
+        // if mouseX >= d.X && mouseX <= d.X + d.Dimension && mouseY >= d.Y && mouseY <= d.Y + d.Dimension {
+        //     d.Visible = false
+        //     return true
+        // }
     }
+    return false
 }
