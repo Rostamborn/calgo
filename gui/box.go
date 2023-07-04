@@ -14,16 +14,18 @@ type Box struct {
     Dimension int
     Image *ebiten.Image
     Dialog *DialogBox
+    Title *Label
     Labels []*Label
 }
 
-func NewBox(x, y, dimension int, boximage, dialogimage *ebiten.Image, labels []*Label) *Box {
+func NewBox(x, y, dimension int, boximage, dialogimage *ebiten.Image, title *Label, labels []*Label) *Box {
     return &Box{
         X: x,
         Y: y,
         Dimension: dimension,
         Image: boximage,
         Dialog: NewDialogBox(x, y, 2*dimension, dialogimage),
+        Title: title,
         Labels: labels,
     }
 }
@@ -39,6 +41,7 @@ func (b *Box) SetOptions() *ebiten.DrawImageOptions {
 }
 
 func (b *Box) Draw(screen *ebiten.Image) {
+    text.Draw(b.Image, b.Title.text, b.Title.font, b.Title.X, b.Title.Y, color.Black)
     for _, label := range b.Labels {
         text.Draw(b.Image, label.text, label.font, label.X, label.Y, color.Black)
     }

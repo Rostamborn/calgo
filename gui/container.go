@@ -31,6 +31,7 @@ func NewBoxContainer(xCount, yCount int, image *ebiten.Image) (*BoxContainer, er
     container.Mode = "default"
     container.Image = image
 
+    counter := 1
     for j := 0; j < container.yCount; j++ {
         for i := 0; i < container.xCount; i++ {
             boximage := ebiten.NewImage(boxDimension, boxDimension)
@@ -42,12 +43,16 @@ func NewBoxContainer(xCount, yCount int, image *ebiten.Image) (*BoxContainer, er
             labels := make([]*Label, 0)
             x := i * boxDimension + (i+1)*boxMargin
             y := j * boxDimension + (j+1)*boxMargin
-            box := NewBox(x, y, boxDimension, boximage, dialogimage, labels)
-            label := NewLabel(boxMargin*2, boxMargin*2, fmt.Sprint(i))
+            title := NewLabel(boxMargin, boxMargin*2, fmt.Sprint(counter))
+            box := NewBox(x, y, boxDimension, boximage, dialogimage, title, labels)
+            label := NewLabel(boxMargin, boxMargin*4, "arman")
+            counter++
             box.AddLabel(label)
             container.AddBox(box)
         }
     }
+    container.Boxes[1].Labels[0].text = "hello ya daft fooker, tis done"
+    container.Boxes[5].Labels[0].text = "mamad"
 
     return container, nil
 }

@@ -24,7 +24,7 @@ type Label struct {
 
 func NewLabel(x, y int, text string) *Label {
     FontFace, err := opentype.NewFace(FontTT, &opentype.FaceOptions{
-        Size: 24,
+        Size: 18,
         DPI: 72,
     })
     if err != nil {
