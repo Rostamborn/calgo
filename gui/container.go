@@ -1,7 +1,11 @@
 package gui
 
 import (
+	"fmt"
+    "image/color"
+
 	"github.com/hajimehoshi/ebiten/v2"
+	// "github.com/hajimehoshi/ebiten/v2/text"
 )
 
 const(
@@ -29,9 +33,18 @@ func NewBoxContainer(xCount, yCount int, image *ebiten.Image) (*BoxContainer, er
 
     for j := 0; j < container.yCount; j++ {
         for i := 0; i < container.xCount; i++ {
+            boximage := ebiten.NewImage(boxDimension, boxDimension)
+            boximage.Fill(color.RGBA{0, 0xff, 0, 0xff})
+
+            dialogimage := ebiten.NewImage(2*boxDimension, 2*boxDimension)
+            dialogimage.Fill(color.RGBA{39, 0x1a, 0xe8, 0xff})
+
+            labels := make([]*Label, 0)
             x := i * boxDimension + (i+1)*boxMargin
             y := j * boxDimension + (j+1)*boxMargin
-            box := NewBox(x, y, boxDimension, boxImage, dialogImage)
+            box := NewBox(x, y, boxDimension, boximage, dialogimage, labels)
+            label := NewLabel(boxMargin*2, boxMargin*2, fmt.Sprint(i))
+            box.AddLabel(label)
             container.AddBox(box)
         }
     }

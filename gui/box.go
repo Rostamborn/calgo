@@ -1,8 +1,11 @@
 package gui
 
 import (
-	"github.com/hajimehoshi/ebiten/v2/inpututil"
+	"image/color"
+
 	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/hajimehoshi/ebiten/v2/inpututil"
+	"github.com/hajimehoshi/ebiten/v2/text"
 )
 
 type Box struct {
@@ -11,16 +14,22 @@ type Box struct {
     Dimension int
     Image *ebiten.Image
     Dialog *DialogBox
+    Labels []*Label
 }
 
-func NewBox(x, y, dimension int, boxImage, dialogImage *ebiten.Image) *Box {
+func NewBox(x, y, dimension int, boximage, dialogimage *ebiten.Image, labels []*Label) *Box {
     return &Box{
         X: x,
         Y: y,
         Dimension: dimension,
-        Image: boxImage,
-        Dialog: NewDialogBox(x, y, 2*dimension, dialogImage),
+        Image: boximage,
+        Dialog: NewDialogBox(x, y, 2*dimension, dialogimage),
+        Labels: labels,
     }
+}
+
+func (b *Box) AddLabel(label *Label) {
+    b.Labels = append(b.Labels, label)
 }
 
 func (b *Box) SetOptions() *ebiten.DrawImageOptions {
@@ -30,6 +39,9 @@ func (b *Box) SetOptions() *ebiten.DrawImageOptions {
 }
 
 func (b *Box) Draw(screen *ebiten.Image) {
+    for _, label := range b.Labels {
+        text.Draw(b.Image, label.text, label.font, label.X, label.Y, color.Black)
+    }
     screen.DrawImage(b.Image, b.SetOptions())
 }
 

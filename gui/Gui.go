@@ -3,12 +3,13 @@ package gui
 import (
 	"image/color"
 	"log"
-    "os"
-    "golang.org/x/image/font"
-	"golang.org/x/image/font/opentype"
+	"os"
+
 	"github.com/calgo/parser"
 	"github.com/hajimehoshi/ebiten/v2"
-	"github.com/hajimehoshi/ebiten/v2/text"
+	"golang.org/x/image/font"
+	"golang.org/x/image/font/opentype"
+	"golang.org/x/image/font/sfnt"
 )
 
 const(
@@ -16,40 +17,34 @@ const(
     WindowHeight = 900
 )
 
-var FontFace font.Face
+var FontTT *sfnt.Font
 
-var boxImage *ebiten.Image
+// var boxImage *ebiten.Image
 var containerImage *ebiten.Image
-var dialogImage *ebiten.Image
+// var dialogImage *ebiten.Image
 
 func init() {
     containerImage = ebiten.NewImage(WindowWidth, WindowHeight)
     containerImage.Fill(color.RGBA{0xff, 0, 0, 0xff})
 
-    boxImage = ebiten.NewImage(boxDimension, boxDimension)
-    boxImage.Fill(color.RGBA{0, 0xff, 0, 0xff})
-
-    dialogImage = ebiten.NewImage(2*boxDimension, 2*boxDimension)
-    dialogImage.Fill(color.RGBA{39, 0x1a, 0xe8, 0xcc})
-
+    // boxImage = ebiten.NewImage(boxDimension, boxDimension)
+    // boxImage.Fill(color.RGBA{0, 0xff, 0, 0xff})
+    //
+    // dialogImage = ebiten.NewImage(2*boxDimension, 2*boxDimension)
+    // dialogImage.Fill(color.RGBA{39, 0x1a, 0xe8, 0xff})
+    //
     fontFile := "JetBrainsMono-ExtraBold.ttf"
 	fontData, err := os.ReadFile(fontFile)
 	if err != nil {
 		log.Fatal("Failed to load font:", err)
 	}
 
-    tt, err := opentype.Parse(fontData)
+    FontTT, err = opentype.Parse(fontData)
     if err != nil {
         log.Fatal(err)
     }
 
-    FontFace, err = opentype.NewFace(tt, &opentype.FaceOptions{
-        Size: 24,
-        DPI: 72,
-    })
-    if err != nil {
-        log.Fatal(err)
-    }
+    
 }
 
 type Game struct {
@@ -64,7 +59,6 @@ func (g *Game) Update() error {
 
 func (g *Game) Draw(screen *ebiten.Image) {
    g.container.Draw(screen)
-   text.Draw(screen, "cunt", g.font, 50 , 50, color.RGBA{R: 128, G: 0, B: 128, A: 255})
 }
 
 func (g *Game) Layout(outsideWidth, outsideHeight int) (screenWidth, screenHeight int) {
@@ -72,8 +66,13 @@ func (g *Game) Layout(outsideWidth, outsideHeight int) (screenWidth, screenHeigh
 }
 
 func Initialize(events []parser.Event) {
-    
-
+    FontFace, err := opentype.NewFace(FontTT, &opentype.FaceOptions{
+        Size: 24,
+        DPI: 72,
+    })
+    if err != nil {
+        log.Fatal(err)
+    }
     container, _ := NewBoxContainer(7, 4, containerImage)
     game := &Game{
         container: container,
