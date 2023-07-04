@@ -1,13 +1,11 @@
 package gui
 
 import (
-	"fmt"
-
 	"github.com/hajimehoshi/ebiten/v2"
 )
 
 const(
-    boxDimension = 100
+    boxDimension = 150
     boxMargin = 10
 )
 
@@ -17,15 +15,17 @@ type BoxContainer struct {
     Boxes []*Box
     Mode string
     DialogBox *DialogBox
+    Image *ebiten.Image
 }
 
-func NewBoxContainer(xCount, yCount int) (*BoxContainer, error) {
+func NewBoxContainer(xCount, yCount int, image *ebiten.Image) (*BoxContainer, error) {
     container := new(BoxContainer)
     boxes := make([]*Box, 0)
     container.xCount = xCount
     container.yCount = yCount
     container.Boxes = boxes
     container.Mode = "default"
+    container.Image = image
 
     for j := 0; j < container.yCount; j++ {
         for i := 0; i < container.xCount; i++ {
@@ -44,15 +44,11 @@ func (b *BoxContainer) AddBox(box *Box) {
 }
 
 func (b *BoxContainer) Draw(screen *ebiten.Image) {
+    screen.DrawImage(b.Image, nil)
     if b.Mode == "dialogmode" {
         for _, box := range b.Boxes {
             box.Draw(screen)
         }
-        // for _, box := range b.Boxes {
-        //     if box.Dialog.Visible {
-        //         box.Dialog.Draw(screen)
-        //     }
-        // }
         if b.DialogBox != nil && b.DialogBox.Visible {
             b.DialogBox.Draw(screen)
         }
@@ -65,16 +61,8 @@ func (b *BoxContainer) Draw(screen *ebiten.Image) {
 
 func (b *BoxContainer) Update() {
     if b.Mode == "dialogmode" {
-        // for _, box := range b.Boxes {
-        //     ok := box.Dialog.Update()
-        //     if ok {
-        //         b.Mode = "default"
-        //         fmt.Println("************change to default*******")
-        //     }
-        // }
         if b.DialogBox != nil {
             ok := b.DialogBox.ClickToExit()
-            fmt.Println("dialog")
             if ok {
                 b.Mode = "default"
             }
@@ -87,6 +75,5 @@ func (b *BoxContainer) Update() {
                 b.DialogBox = box.Dialog
             }
         }
-        fmt.Println("default")
     }
 }
