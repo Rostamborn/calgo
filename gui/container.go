@@ -2,10 +2,11 @@ package gui
 
 import (
 	"fmt"
-    "image/color"
+	"image/color"
+	"log"
 
+	"github.com/calgo/parser"
 	"github.com/hajimehoshi/ebiten/v2"
-	// "github.com/hajimehoshi/ebiten/v2/text"
 )
 
 const(
@@ -20,9 +21,10 @@ type BoxContainer struct {
     Mode string
     DialogBox *DialogBox
     Image *ebiten.Image
+    Events []parser.Event
 }
 
-func NewBoxContainer(xCount, yCount int, image *ebiten.Image) (*BoxContainer, error) {
+func NewBoxContainer(xCount, yCount int, image *ebiten.Image, events []parser.Event) (*BoxContainer, error) {
     container := new(BoxContainer)
     boxes := make([]*Box, 0)
     container.xCount = xCount
@@ -30,6 +32,16 @@ func NewBoxContainer(xCount, yCount int, image *ebiten.Image) (*BoxContainer, er
     container.Boxes = boxes
     container.Mode = "default"
     container.Image = image
+    container.Events = events
+
+    titleFont, err := CreateFontFace(18, 72)
+    if err != nil {
+        log.Fatal(err)
+    }
+    eventFont, err := CreateFontFace(14, 72)
+    if err != nil {
+        log.Fatal(err)
+    }
 
     counter := 1
     for j := 0; j < container.yCount; j++ {
@@ -43,9 +55,9 @@ func NewBoxContainer(xCount, yCount int, image *ebiten.Image) (*BoxContainer, er
             labels := make([]*Label, 0)
             x := i * boxDimension + (i+1)*boxMargin
             y := j * boxDimension + (j+1)*boxMargin
-            title := NewLabel(boxMargin, boxMargin*2, fmt.Sprint(counter))
+            title := NewLabel(boxMargin, boxMargin*2, fmt.Sprint(counter), titleFont)
             box := NewBox(x, y, boxDimension, boximage, dialogimage, title, labels)
-            label := NewLabel(boxMargin, boxMargin*4, "arman")
+            label := NewLabel(boxMargin, boxMargin*4, container.Events[counter-1].Summary, eventFont)
             counter++
             box.AddLabel(label)
             container.AddBox(box)

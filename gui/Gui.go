@@ -73,7 +73,7 @@ func Initialize(events []parser.Event) {
     if err != nil {
         log.Fatal(err)
     }
-    container, _ := NewBoxContainer(7, 4, containerImage)
+    container, _ := NewBoxContainer(7, 4, containerImage, events)
     game := &Game{
         container: container,
         font: FontFace,

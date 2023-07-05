@@ -2,7 +2,6 @@ package gui
 
 import (
 	"image/color"
-	"log"
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"golang.org/x/image/font"
@@ -22,14 +21,18 @@ type Label struct {
     font font.Face
 }
 
-func NewLabel(x, y int, text string) *Label {
-    FontFace, err := opentype.NewFace(FontTT, &opentype.FaceOptions{
-        Size: 18,
-        DPI: 72,
-    })
-    if err != nil {
-        log.Fatal(err)
-    }
+func NewLabel(x, y int, text string, fontface font.Face) *Label {
+    // FontFace, err := opentype.NewFace(FontTT, &opentype.FaceOptions{
+    //     Size: 18,
+    //     DPI: 72,
+    // })
+    // if err != nil {
+    //     log.Fatal(err)
+    // }
+    // FontFace, err := CreateFontFace(18, 72)
+    // if err != nil {
+    //     log.Fatal(err)
+    // }
 
     background := ebiten.NewImage(labelWidth, labelHeight)
     background.Fill(color.White)
@@ -38,6 +41,17 @@ func NewLabel(x, y int, text string) *Label {
         Y: y,
         Background: background,
         text: text,
-        font: FontFace,
+        font: fontface,
     }
+}
+
+func CreateFontFace(size, dpi float64) (font.Face, error) {
+    fontFace, err := opentype.NewFace(FontTT, &opentype.FaceOptions{
+        Size: size,
+        DPI: dpi,
+    })
+    if err != nil {
+        return nil, err
+    }
+    return fontFace, nil
 }

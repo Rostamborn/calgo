@@ -17,6 +17,7 @@ func main() {
 	for _, v := range events {
 		fmt.Println(v)
 	}
+    events = events[:28]
 	// err, ok := parser.WriteToICS(items, "test.ics")
 	// if err != nil {
 	//   fmt.Println(err.Error())
