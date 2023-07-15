@@ -63,8 +63,8 @@ func NewBoxContainer(xCount, yCount int, image *ebiten.Image, events []parser.Ev
             container.AddBox(box)
         }
     }
-    container.Boxes[1].Labels[0].text = "hello ya daft fooker, tis done"
-    container.Boxes[5].Labels[0].text = "mamad"
+    // container.Boxes[1].Labels[0].text = "hello ya daft fooker, tis done"
+    // container.Boxes[5].Labels[0].text = "mamad"
 
     return container, nil
 }

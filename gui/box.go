@@ -1,11 +1,10 @@
 package gui
 
 import (
-	"image/color"
+	// "image/color"
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
-	"github.com/hajimehoshi/ebiten/v2/text"
 )
 
 type Box struct {
@@ -41,9 +40,11 @@ func (b *Box) SetOptions() *ebiten.DrawImageOptions {
 }
 
 func (b *Box) Draw(screen *ebiten.Image) {
-    text.Draw(b.Image, b.Title.text, b.Title.font, b.Title.X, b.Title.Y, color.Black)
+    // text.Draw(b.Image, b.Title.Text, b.Title.Font, b.Title.X, b.Title.Y, color.Black)
+    b.Title.Draw(b.Image)
     for _, label := range b.Labels {
-        text.Draw(b.Image, label.text, label.font, label.X, label.Y, color.Black)
+        // text.Draw(b.Image, label.Text, label.Font, label.X, label.Y, color.Black)
+        label.Draw(b.Image)
     }
     screen.DrawImage(b.Image, b.SetOptions())
 }

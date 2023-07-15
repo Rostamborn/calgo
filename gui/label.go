@@ -4,6 +4,7 @@ import (
 	"image/color"
 
 	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/hajimehoshi/ebiten/v2/text"
 	"golang.org/x/image/font"
 	"golang.org/x/image/font/opentype"
 )
@@ -17,8 +18,9 @@ type Label struct {
     X int
     Y int
     Background *ebiten.Image
-    text string
-    font font.Face
+    Text string
+    Font font.Face
+    Color color.Color
 }
 
 func NewLabel(x, y int, text string, fontface font.Face) *Label {
@@ -40,9 +42,20 @@ func NewLabel(x, y int, text string, fontface font.Face) *Label {
         X: x,
         Y: y,
         Background: background,
-        text: text,
-        font: fontface,
+        Text: text,
+        Font: fontface,
+        Color: color.Black,
     }
+}
+
+func (b *Label) SetOptions() *ebiten.DrawImageOptions {
+    options := &ebiten.DrawImageOptions{}
+    options.GeoM.Translate(float64(b.X), float64(b.Y))
+    return options
+}
+
+func (l *Label) Draw(screen *ebiten.Image) {
+    text.Draw(screen, l.Text, l.Font, l.X, l.Y, l.Color)
 }
 
 func CreateFontFace(size, dpi float64) (font.Face, error) {
