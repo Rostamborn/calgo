@@ -55,9 +55,9 @@ func NewBoxContainer(xCount, yCount int, image *ebiten.Image, events []parser.Ev
             labels := make([]*Label, 0)
             x := i * boxDimension + (i+1)*boxMargin
             y := j * boxDimension + (j+1)*boxMargin
-            title := NewLabel(boxMargin, boxMargin*2, fmt.Sprint(counter), titleFont)
+            title := NewLabel(boxMargin, boxMargin*2, fmt.Sprint(counter), titleFont, color.White)
             box := NewBox(x, y, boxDimension, boximage, dialogimage, title, labels)
-            label := NewLabel(boxMargin, boxMargin*4, container.Events[counter-1].Summary, eventFont)
+            label := NewLabel(boxMargin, boxMargin*4, container.Events[counter-1].Summary, eventFont, color.White)
             counter++
             box.AddLabel(label)
             container.AddBox(box)
@@ -80,6 +80,7 @@ func (b *BoxContainer) Draw(screen *ebiten.Image) {
             box.Draw(screen)
         }
         if b.DialogBox != nil && b.DialogBox.Visible {
+            fmt.Println("drawing Dialog")
             b.DialogBox.Draw(screen)
         }
     } else {
@@ -92,6 +93,7 @@ func (b *BoxContainer) Draw(screen *ebiten.Image) {
 func (b *BoxContainer) Update() {
     if b.Mode == "dialogmode" {
         if b.DialogBox != nil {
+            b.DialogBox.Update()
             ok := b.DialogBox.ClickToExit()
             if ok {
                 b.Mode = "default"

@@ -23,6 +23,7 @@ var FontTT *sfnt.Font
 var containerImage *ebiten.Image
 // var dialogImage *ebiten.Image
 
+
 func init() {
     containerImage = ebiten.NewImage(WindowWidth, WindowHeight)
     containerImage.Fill(color.RGBA{0xff, 0, 0, 0xff})
@@ -43,8 +44,6 @@ func init() {
     if err != nil {
         log.Fatal(err)
     }
-
-    
 }
 
 type Game struct {

@@ -23,7 +23,7 @@ type Label struct {
     Color color.Color
 }
 
-func NewLabel(x, y int, text string, fontface font.Face) *Label {
+func NewLabel(x, y int, text string, fontface font.Face, col color.Color) *Label {
     // FontFace, err := opentype.NewFace(FontTT, &opentype.FaceOptions{
     //     Size: 18,
     //     DPI: 72,
@@ -44,7 +44,7 @@ func NewLabel(x, y int, text string, fontface font.Face) *Label {
         Background: background,
         Text: text,
         Font: fontface,
-        Color: color.Black,
+        Color: col,
     }
 }
 

@@ -1,7 +1,8 @@
 package gui
 
 import (
-	// "image/color"
+	"fmt"
+	"image/color"
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
@@ -18,6 +19,7 @@ type Box struct {
 }
 
 func NewBox(x, y, dimension int, boximage, dialogimage *ebiten.Image, title *Label, labels []*Label) *Box {
+    
     return &Box{
         X: x,
         Y: y,
@@ -40,10 +42,8 @@ func (b *Box) SetOptions() *ebiten.DrawImageOptions {
 }
 
 func (b *Box) Draw(screen *ebiten.Image) {
-    // text.Draw(b.Image, b.Title.Text, b.Title.Font, b.Title.X, b.Title.Y, color.Black)
     b.Title.Draw(b.Image)
     for _, label := range b.Labels {
-        // text.Draw(b.Image, label.Text, label.Font, label.X, label.Y, color.Black)
         label.Draw(b.Image)
     }
     screen.DrawImage(b.Image, b.SetOptions())
@@ -66,15 +66,21 @@ type DialogBox struct {
     Dimension int
     Image *ebiten.Image
     Visible bool
+    Buttons []*Button
 }
 
 func NewDialogBox(x, y, dimension int, image *ebiten.Image) *DialogBox {
+    button := NewButton(x, y, 50, 50, dimension/4, dimension/4, color.RGBA{0xff, 0, 0, 0xff}, "hello")
+
+    buttons := make([]*Button, 0)
+    buttons = append(buttons, button)
     return &DialogBox{
         X: x,
         Y: y,
         Dimension: dimension,
         Image: image,
         Visible: false,
+        Buttons: buttons,
     }
 }
 
@@ -86,7 +92,13 @@ func (d *DialogBox) SetOptions() *ebiten.DrawImageOptions {
 
 func (d *DialogBox) Draw(screen *ebiten.Image) {
     if d.Visible {
+        for _, button := range d.Buttons {
+            fmt.Println("drawing BUTTON")
+            button.Draw(d.Image)
+
+        }
         screen.DrawImage(d.Image, d.SetOptions())
+        fmt.Println("Drawing Dialog to screen ")
     }
 }
 
@@ -97,10 +109,12 @@ func (d *DialogBox) ClickToExit() bool {
             d.Visible = false
             return true
         }
-        // if mouseX >= d.X && mouseX <= d.X + d.Dimension && mouseY >= d.Y && mouseY <= d.Y + d.Dimension {
-        //     d.Visible = false
-        //     return true
-        // }
     }
     return false
+}
+
+func (d *DialogBox) Update() {
+    for _, button := range d.Buttons {
+        button.Update()
+    }
 }
