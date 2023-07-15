@@ -22,18 +22,17 @@ var FontTT *sfnt.Font
 // var boxImage *ebiten.Image
 var containerImage *ebiten.Image
 // var dialogImage *ebiten.Image
-
+var SlateGray = color.RGBA{0x70, 0x80, 0x90, 0xff}
+var DarkSlateGrey = color.RGBA{0x2f, 0x4f, 0x4f, 0xff}
+var LightGreen = color.RGBA{0x90, 0xee, 0x90, 0xff}
+var DarkGray = color.RGBA{0xa9, 0xa9, 0xa9, 0xff}
+var Teal = color.RGBA{0x00, 0x80, 0x80, 0xff}
 
 func init() {
+    // Background Image
     containerImage = ebiten.NewImage(WindowWidth, WindowHeight)
-    containerImage.Fill(color.RGBA{0xff, 0, 0, 0xff})
+    containerImage.Fill(DarkSlateGrey)
 
-    // boxImage = ebiten.NewImage(boxDimension, boxDimension)
-    // boxImage.Fill(color.RGBA{0, 0xff, 0, 0xff})
-    //
-    // dialogImage = ebiten.NewImage(2*boxDimension, 2*boxDimension)
-    // dialogImage.Fill(color.RGBA{39, 0x1a, 0xe8, 0xff})
-    //
     fontFile := "JetBrainsMono-ExtraBold.ttf"
 	fontData, err := os.ReadFile(fontFile)
 	if err != nil {

@@ -2,7 +2,6 @@ package gui
 
 import (
 	"image/color"
-	"log"
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
@@ -23,13 +22,7 @@ type Button struct {
 func NewButton(x, y, relX, relY, width, height int, col color.Color, text string) *Button {
     image := ebiten.NewImage(width, height)
     image.Fill(col)
-
-    font, err := CreateFontFace(18, 72)
-    if err != nil {
-        log.Fatal(err)
-    }
-
-    label := NewLabel(width/2 , height/2 , text, font, color.Black)
+    label := NewLabel(relX , relY , text, color.Black, 18)
 
     return &Button{
         X: x,
@@ -51,7 +44,8 @@ func (b *Button) SetOptions() *ebiten.DrawImageOptions {
 }
 
 func (b *Button) Draw(screen *ebiten.Image) {
-    b.Label.Draw(b.Image)
+    b.Label.DrawCentered(b.Image) // Draw label on Button image
+    // b.Label.Draw(b.Image)
     screen.DrawImage(b.Image, b.SetOptions())
 }
 
@@ -89,7 +83,7 @@ func (b *Button) UnHover() bool {
 
 func (b *Button) Update() {
     if b.Hover() {
-        b.Image.Fill(color.White)
+        b.Image.Fill(DarkGray)
         if b.Click() {
         b.Image.Fill(color.Black)
         }

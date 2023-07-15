@@ -3,7 +3,6 @@ package gui
 import (
 	"fmt"
 	"image/color"
-	"log"
 
 	"github.com/calgo/parser"
 	"github.com/hajimehoshi/ebiten/v2"
@@ -34,38 +33,26 @@ func NewBoxContainer(xCount, yCount int, image *ebiten.Image, events []parser.Ev
     container.Image = image
     container.Events = events
 
-    titleFont, err := CreateFontFace(18, 72)
-    if err != nil {
-        log.Fatal(err)
-    }
-    eventFont, err := CreateFontFace(14, 72)
-    if err != nil {
-        log.Fatal(err)
-    }
-
     counter := 1
     for j := 0; j < container.yCount; j++ {
         for i := 0; i < container.xCount; i++ {
             boximage := ebiten.NewImage(boxDimension, boxDimension)
-            boximage.Fill(color.RGBA{0, 0xff, 0, 0xff})
+            boximage.Fill(SlateGray)
 
             dialogimage := ebiten.NewImage(2*boxDimension, 2*boxDimension)
-            dialogimage.Fill(color.RGBA{39, 0x1a, 0xe8, 0xff})
+            dialogimage.Fill(Teal)
 
             labels := make([]*Label, 0)
             x := i * boxDimension + (i+1)*boxMargin
             y := j * boxDimension + (j+1)*boxMargin
-            title := NewLabel(boxMargin, boxMargin*2, fmt.Sprint(counter), titleFont, color.White)
+            title := NewLabel(boxMargin, boxMargin*2, fmt.Sprint(counter), color.Black, 18)
+            label := NewLabel(boxMargin, boxMargin*4, container.Events[counter-1].Summary, color.Black, 14)
             box := NewBox(x, y, boxDimension, boximage, dialogimage, title, labels)
-            label := NewLabel(boxMargin, boxMargin*4, container.Events[counter-1].Summary, eventFont, color.White)
             counter++
             box.AddLabel(label)
             container.AddBox(box)
         }
     }
-    // container.Boxes[1].Labels[0].text = "hello ya daft fooker, tis done"
-    // container.Boxes[5].Labels[0].text = "mamad"
-
     return container, nil
 }
 
@@ -80,7 +67,6 @@ func (b *BoxContainer) Draw(screen *ebiten.Image) {
             box.Draw(screen)
         }
         if b.DialogBox != nil && b.DialogBox.Visible {
-            fmt.Println("drawing Dialog")
             b.DialogBox.Draw(screen)
         }
     } else {

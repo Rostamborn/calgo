@@ -1,8 +1,6 @@
 package gui
 
 import (
-	"fmt"
-	"image/color"
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
@@ -70,10 +68,10 @@ type DialogBox struct {
 }
 
 func NewDialogBox(x, y, dimension int, image *ebiten.Image) *DialogBox {
-    button := NewButton(x, y, 50, 50, dimension/4, dimension/4, color.RGBA{0xff, 0, 0, 0xff}, "hello")
+    closeButton := NewButton(x, y, 70, 100, dimension/2, dimension/4, SlateGray, "hello")
 
     buttons := make([]*Button, 0)
-    buttons = append(buttons, button)
+    buttons = append(buttons, closeButton)
     return &DialogBox{
         X: x,
         Y: y,
@@ -93,12 +91,10 @@ func (d *DialogBox) SetOptions() *ebiten.DrawImageOptions {
 func (d *DialogBox) Draw(screen *ebiten.Image) {
     if d.Visible {
         for _, button := range d.Buttons {
-            fmt.Println("drawing BUTTON")
             button.Draw(d.Image)
 
         }
         screen.DrawImage(d.Image, d.SetOptions())
-        fmt.Println("Drawing Dialog to screen ")
     }
 }
 
