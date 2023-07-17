@@ -1,8 +1,8 @@
 package main
 
 import (
-    "fmt"
-    "github.com/calgo/parser"
+	"fmt"
+	"github.com/calgo/parser"
 )
 
 type Date struct {
