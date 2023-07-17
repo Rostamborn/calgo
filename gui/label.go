@@ -20,6 +20,7 @@ type Label struct {
 	X     int
 	Y     int
 	Text  string
+    Runes []rune
 	Font  font.Face
 	Color color.Color
 	Size  float64
