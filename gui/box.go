@@ -2,7 +2,7 @@ package gui
 
 import (
 	"image/color"
-    "strings"
+	"strings"
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
@@ -47,6 +47,7 @@ func (b *Box) Draw(screen *ebiten.Image) {
 		label.Draw(b.Image)
 	}
 	screen.DrawImage(b.Image, b.SetOptions())
+    b.Image.Fill(SlateGray)
 }
 
 func (b *Box) Clicked() bool {
@@ -108,6 +109,7 @@ func (d *DialogBox) Draw(screen *ebiten.Image) {
             textBox.Draw(d.Image)
         }
 		screen.DrawImage(d.Image, d.SetOptions())
+        d.Image.Fill(Teal)
 	}
 }
 

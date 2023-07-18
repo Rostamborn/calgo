@@ -62,13 +62,12 @@ func (b *BoxContainer) AddBox(box *Box) {
 
 func (b *BoxContainer) Draw(screen *ebiten.Image) {
 	screen.DrawImage(b.Image, nil)
-	if b.Mode == "dialogmode" {
+	if b.Mode == "dialogmode" && b.DialogBox.Visible {
 		for _, box := range b.Boxes {
 			box.Draw(screen)
 		}
-		if b.DialogBox != nil && b.DialogBox.Visible {
-			b.DialogBox.Draw(screen)
-		}
+        b.DialogBox.Draw(screen)
+        // b.DialogBox.Image.Fill(Teal)
 	} else {
 		for _, box := range b.Boxes {
 			box.Draw(screen)
