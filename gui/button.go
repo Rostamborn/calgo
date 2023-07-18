@@ -49,6 +49,7 @@ func (b *Button) Draw(screen *ebiten.Image) {
 	b.Label.DrawCentered(b.Image) // Draw label on Button image
 	// b.Label.Draw(b.Image)
 	screen.DrawImage(b.Image, b.SetOptions())
+    b.Image.Fill(b.Color)
 }
 
 func (b *Button) Clicked() bool {

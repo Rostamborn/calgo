@@ -61,6 +61,7 @@ func (b *Box) Clicked() bool {
 	return false
 }
 
+
 type DialogBox struct {
 	X         int
 	Y         int
@@ -69,16 +70,17 @@ type DialogBox struct {
 	Visible   bool
 	Buttons   map[string]*Button // close
     TextBoxes map[string]*TextBox // summary
+    Labels    []*Label
 }
 
 func NewDialogBox(x, y, dimension int, image *ebiten.Image) *DialogBox {
 	width := dimension / 3
 	height := dimension / 8
 	closeButton := NewButton(x, y, dimension-(width+10), dimension-(height+10), width, height, SlateGray, "CLOSE", "close")
-    textBox := NewTextBox(x, y, 10, 15, 50, 20, 18)
+    summaryTextBox := NewTextBox(x, y, 10, 15, 50, 20, 18, "Summary")
 
     textBoxes := make(map[string]*TextBox)
-    textBoxes["summary"] = textBox
+    textBoxes["summary"] = summaryTextBox
 
 	buttons := make(map[string]*Button)
     buttons["close"] = closeButton
@@ -97,6 +99,10 @@ func (d *DialogBox) SetOptions() *ebiten.DrawImageOptions {
 	options := &ebiten.DrawImageOptions{}
 	options.GeoM.Translate(float64(d.X), float64(d.Y))
 	return options
+}
+
+func (d *DialogBox) AddLabel(label *Label) {
+    d.Labels = append(d.Labels, label)
 }
 
 func (d *DialogBox) Draw(screen *ebiten.Image) {
@@ -148,11 +154,16 @@ type TextBox struct {
     Height int
     Size  float64
     Label *Label
+    Title *Label
     Counter int
 }
 
-func NewTextBox(x, y, relX, relY, width, height int, size float64) *TextBox {
-    label := NewLabel(relX, relY, "", color.Black, size)
+func NewTextBox(x, y, relX, relY, width, height int, size float64, title string) *TextBox {
+    title = title + ":"
+    titleLabel := NewLabel(relX, relY, title, color.Black, size+2)
+    _, heightTitle := titleLabel.TextDimension()
+    nextLine := (relY + heightTitle)/2
+    label := NewLabel(relX, nextLine, "", color.Black, size)
     return &TextBox{
         X:         x,
         Y:         y,
@@ -162,6 +173,7 @@ func NewTextBox(x, y, relX, relY, width, height int, size float64) *TextBox {
         Height:    height,
         Size:      size,
         Label:    label,
+        Title:    titleLabel,
         Counter: 0,
     }
 }
@@ -173,6 +185,9 @@ func (t *TextBox) SetOptions() *ebiten.DrawImageOptions {
 }
 
 func (t *TextBox) Draw(screen *ebiten.Image) {
+    t.Title.Draw(screen)
+    
+
     t.Label.Draw(screen)
 }
 
@@ -199,12 +214,21 @@ func (t *TextBox) Update() {
 	if repeatingKeyPressed(ebiten.KeyEnter) || repeatingKeyPressed(ebiten.KeyNumpadEnter) || len(t.Label.Text)%26 == 0 {
 		t.Label.Text += "\n"
 	}
+    t.Label.Text = strings.Replace(t.Label.Text, "|", "", -1) 
 
 	if repeatingKeyPressed(ebiten.KeyBackspace) {
 		if len(t.Label.Text) >= 1 {
 			t.Label.Text = t.Label.Text[:len(t.Label.Text)-1]
 		}
 	}
+
+
+    if t.Counter%60 < 30 && !strings.HasSuffix(t.Label.Text, "|") {
+        t.Label.Text += "|"
+    } else if t.Counter%60 >= 30 {
+        t.Label.Text = strings.TrimSuffix(t.Label.Text, "|")
+    }
+
     t.Counter++
 }
 
