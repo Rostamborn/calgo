@@ -81,7 +81,10 @@ func NewDialogBox(width, height int, image *ebiten.Image) *DialogBox {
     x, y := (screenWidth-width)/2, (screenHeight-height)/2
 	buttonWidth := width / 5
 	buttonHeight := height / 4
+
 	closeButton := NewButton(x, y, width-(buttonWidth+10), height-(buttonHeight+10), buttonWidth, buttonHeight, SlateGray, "CLOSE", "close")
+    addButton := NewButton(x, y, width-2*(buttonWidth+10), height-(buttonHeight+10), buttonWidth, buttonHeight, SlateGray, "ADD", "add")
+
     summaryTextBox := NewTextBox(x, y, 10, 20, 50, 20, 18, "Summary")
 
     textBoxes := make(map[string]*TextBox)
@@ -89,6 +92,7 @@ func NewDialogBox(width, height int, image *ebiten.Image) *DialogBox {
 
 	buttons := make(map[string]*Button)
     buttons["close"] = closeButton
+    buttons["add"] = addButton
 	return &DialogBox{
 		X:         x,
 		Y:         y,
