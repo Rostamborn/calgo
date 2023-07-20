@@ -13,8 +13,8 @@ import (
 )
 
 const (
-	WindowWidth  = 1400
-	WindowHeight = 900
+	WindowWidth  = 1305
+	WindowHeight = 750
 )
 
 var FontTT *sfnt.Font

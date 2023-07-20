@@ -9,7 +9,7 @@ import (
 )
 
 const (
-	boxDimension = 150
+	boxDimension = 175
 	boxMargin    = 10
 )
 
@@ -39,15 +39,12 @@ func NewBoxContainer(xCount, yCount int, image *ebiten.Image, events []parser.Ev
 			boximage := ebiten.NewImage(boxDimension, boxDimension)
 			boximage.Fill(SlateGray)
 
-			dialogimage := ebiten.NewImage(2*boxDimension, 2*boxDimension)
-			dialogimage.Fill(Teal)
-
 			labels := make([]*Label, 0)
 			x := i*boxDimension + (i+1)*boxMargin
 			y := j*boxDimension + (j+1)*boxMargin
 			title := NewLabel(boxMargin, boxMargin*2, fmt.Sprint(counter), color.Black, 18)
 			label := NewLabel(boxMargin, boxMargin*4, container.Events[counter-1].Summary, color.Black, 14)
-			box := NewBox(x, y, boxDimension, boximage, dialogimage, title, labels)
+			box := NewBox(x, y, boxDimension, boximage, title, labels)
 			counter++
 			box.AddLabel(label)
 			container.AddBox(box)

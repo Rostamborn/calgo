@@ -18,14 +18,16 @@ type Box struct {
 	Labels    []*Label
 }
 
-func NewBox(x, y, dimension int, boximage, dialogimage *ebiten.Image, title *Label, labels []*Label) *Box {
-
+func NewBox(x, y, dimension int, boximage *ebiten.Image, title *Label, labels []*Label) *Box {
+    dialogWidth, dialogHeight := dimension*4, 2*dimension/3
+    dialogimage := ebiten.NewImage(dialogWidth, dialogHeight)
+	dialogimage.Fill(Teal)
 	return &Box{
 		X:         x,
 		Y:         y,
 		Dimension: dimension,
 		Image:     boximage,
-		Dialog:    NewDialogBox(x, y, 2*dimension, dialogimage),
+		Dialog:    NewDialogBox(dialogWidth, dialogHeight, dialogimage),
 		Title:     title,
 		Labels:    labels,
 	}
@@ -65,7 +67,8 @@ func (b *Box) Clicked() bool {
 type DialogBox struct {
 	X         int
 	Y         int
-	Dimension int
+    Width int
+    Height int
 	Image     *ebiten.Image
 	Visible   bool
 	Buttons   map[string]*Button // close
@@ -73,11 +76,13 @@ type DialogBox struct {
     Labels    []*Label
 }
 
-func NewDialogBox(x, y, dimension int, image *ebiten.Image) *DialogBox {
-	width := dimension / 3
-	height := dimension / 8
-	closeButton := NewButton(x, y, dimension-(width+10), dimension-(height+10), width, height, SlateGray, "CLOSE", "close")
-    summaryTextBox := NewTextBox(x, y, 10, 15, 50, 20, 18, "Summary")
+func NewDialogBox(width, height int, image *ebiten.Image) *DialogBox {
+    screenWidth, screenHeight := WindowWidth, WindowHeight
+    x, y := (screenWidth-width)/2, (screenHeight-height)/2
+	buttonWidth := width / 5
+	buttonHeight := height / 4
+	closeButton := NewButton(x, y, width-(buttonWidth+10), height-(buttonHeight+10), buttonWidth, buttonHeight, SlateGray, "CLOSE", "close")
+    summaryTextBox := NewTextBox(x, y, 10, 20, 50, 20, 18, "Summary")
 
     textBoxes := make(map[string]*TextBox)
     textBoxes["summary"] = summaryTextBox
@@ -87,7 +92,8 @@ func NewDialogBox(x, y, dimension int, image *ebiten.Image) *DialogBox {
 	return &DialogBox{
 		X:         x,
 		Y:         y,
-		Dimension: dimension,
+        Width:     width,
+        Height:    height,
 		Image:     image,
 		Visible:   false,
 		Buttons:   buttons,
@@ -122,7 +128,7 @@ func (d *DialogBox) Draw(screen *ebiten.Image) {
 func (d *DialogBox) ClickToExit() bool {
 	if inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonLeft) {
 		mouseX, mouseY := ebiten.CursorPosition()
-		if mouseX <= d.X || mouseX >= d.X+d.Dimension || mouseY <= d.Y || mouseY >= d.Y+d.Dimension {
+		if mouseX <= d.X || mouseX >= d.X+d.Width || mouseY <= d.Y || mouseY >= d.Y+d.Height {
 			d.Visible = false
 			return true
 		}
@@ -162,7 +168,7 @@ func NewTextBox(x, y, relX, relY, width, height int, size float64, title string)
     title = title + ":"
     titleLabel := NewLabel(relX, relY, title, color.Black, size+2)
     _, heightTitle := titleLabel.TextDimension()
-    nextLine := (relY + heightTitle)/2
+    nextLine := (relY + heightTitle)
     label := NewLabel(relX, nextLine, "", color.Black, size)
     return &TextBox{
         X:         x,
@@ -186,8 +192,6 @@ func (t *TextBox) SetOptions() *ebiten.DrawImageOptions {
 
 func (t *TextBox) Draw(screen *ebiten.Image) {
     t.Title.Draw(screen)
-    
-
     t.Label.Draw(screen)
 }
 
@@ -203,17 +207,13 @@ func (t *TextBox) Clicked() bool {
 
 func (t *TextBox) Update() {
     t.Label.Runes = ebiten.AppendInputChars(t.Label.Runes[:0])
-	t.Label.Text += string(t.Label.Runes)
+	if len(t.Label.Text) <= 60 {
+        t.Label.Text += string(t.Label.Runes)
+	} 
 
-	ss := strings.Split(t.Label.Text, "\n")
-	if len(ss) > 3 {
-		// t.Label.Text = strings.Join(ss[len(ss)-10:], "\n")
-        t.Label.Text = ""
-	}
-
-	if repeatingKeyPressed(ebiten.KeyEnter) || repeatingKeyPressed(ebiten.KeyNumpadEnter) || len(t.Label.Text)%26 == 0 {
-		t.Label.Text += "\n"
-	}
+ //    if len(t.Label.Text)%28 == 0 && len(t.Label.Text) != 0 {
+	// 	t.Label.Text += "\n"
+	// }
     t.Label.Text = strings.Replace(t.Label.Text, "|", "", -1) 
 
 	if repeatingKeyPressed(ebiten.KeyBackspace) {
